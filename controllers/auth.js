@@ -218,9 +218,14 @@ const requestPasswordReset = async (req, res, next) => {
     const secret = process.env.JWT_SECRET + user.password;
     const token = jwt.sign({ id: user._id, email: user.email }, secret, { expiresIn: '1h' });
 
-    const frontendURL = process.env.NODE_ENV === 'production' 
-      ? 'https://blood-donation-frontend-kvtv38vfq-raj675592s-projects.vercel.app' 
-      : 'http://localhost:3000';
+    // Only allow password reset in development
+    if (process.env.NODE_ENV === 'production') {
+      return res.status(503).json({ 
+        message: 'Password reset is only available in development mode. Please contact admin for assistance.' 
+      });
+    }
+
+    const frontendURL = 'http://localhost:3000';
     const resetURL = `${frontendURL}/resetpassword?id=${user._id}&token=${token}`;
 
     const transporter = nodemailer.createTransport({
