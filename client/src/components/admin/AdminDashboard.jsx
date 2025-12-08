@@ -5,7 +5,6 @@ import UserManagement from "./UserManagement";
 import AppointmentManagement from "./AppointmentManagement";
 import InventoryManagement from "./InventoryManagement";
 import BloodRequestManagement from "./BloodRequestManagement";
-import Footer from "../../pages/Footer.jsx";
 // Environment-based API configuration
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
 

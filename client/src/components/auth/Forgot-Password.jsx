@@ -1,9 +1,7 @@
 import React, { useState, useCallback } from 'react';
-import { useNavigate,  } from 'react-router-dom';
 import "../../css/Forgot-Password.css";
 import { useToast } from '../../contexts/ToastContext';
 function ForgotPassword(){
-    const navigate = useNavigate();
     const [email, setEmail] =useState('');
     const [message] = useState('If an account with that email exists, a password reset link has been sent.');
     const { showToast } = useToast();

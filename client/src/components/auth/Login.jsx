@@ -10,7 +10,6 @@ function Login() {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [updatePasswordModal, setUpdatePasswordModal] = useState(false);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };

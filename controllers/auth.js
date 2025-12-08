@@ -219,46 +219,56 @@ const requestPasswordReset = async (req, res, next) => {
     const token = jwt.sign({ id: user._id, email: user.email }, secret, { expiresIn: '1h' });
 
     const frontendURL = process.env.NODE_ENV === 'production' 
-      ? 'https://blood-donation-frontend-cnw5ksfaf-raj675592s-projects.vercel.app' 
+      ? 'https://blood-donation-frontend-kvtv38vfq-raj675592s-projects.vercel.app' 
       : 'http://localhost:3000';
     const resetURL = `${frontendURL}/resetpassword?id=${user._id}&token=${token}`;
 
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    // Try to send email, but don't fail if email service is unavailable
+    try {
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
 
-    const mailOptions = {
-      to: user.email,
-      from: process.env.EMAIL_USER,
-      replyTo: 'noreply@blooddonation.com',
-      subject: 'Blood Donation Management - Password Reset Request',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #dc143c;">Password Reset Request</h2>
-          <p>Hello,</p>
-          <p>You are receiving this email because you (or someone else) have requested to reset the password for your account.</p>
-          <p>Please click on the button below to reset your password:</p>
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${resetURL}" style="background-color: #dc143c; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
+      const mailOptions = {
+        to: user.email,
+        from: process.env.EMAIL_USER,
+        replyTo: 'noreply@blooddonation.com',
+        subject: 'Blood Donation Management - Password Reset Request',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #dc143c;">Password Reset Request</h2>
+            <p>Hello,</p>
+            <p>You are receiving this email because you (or someone else) have requested to reset the password for your account.</p>
+            <p>Please click on the button below to reset your password:</p>
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${resetURL}" style="background-color: #dc143c; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
+            </div>
+            <p>Or copy and paste this link in your browser:</p>
+            <p style="color: #666; word-break: break-all;">${resetURL}</p>
+            <p style="color: #999; font-size: 12px; margin-top: 30px;">This link will expire in 1 hour.</p>
+            <p style="color: #999; font-size: 12px;">If you did not request this, please ignore this email and your password will remain unchanged.</p>
+            <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+            <p style="color: #999; font-size: 11px; text-align: center;">This is an automated email. Please do not reply to this message.</p>
           </div>
-          <p>Or copy and paste this link in your browser:</p>
-          <p style="color: #666; word-break: break-all;">${resetURL}</p>
-          <p style="color: #999; font-size: 12px; margin-top: 30px;">This link will expire in 1 hour.</p>
-          <p style="color: #999; font-size: 12px;">If you did not request this, please ignore this email and your password will remain unchanged.</p>
-          <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-          <p style="color: #999; font-size: 11px; text-align: center;">This is an automated email. Please do not reply to this message.</p>
-        </div>
-      `,
-    };
+        `,
+      };
 
-    await transporter.sendMail(mailOptions);
+      await transporter.sendMail(mailOptions);
+      console.log('✅ Password reset email sent successfully to:', user.email);
+    } catch (emailError) {
+      // Email failed, but still return success and log the reset link
+      console.log('⚠️ Email service unavailable. Password reset link generated:');
+      console.log('==================================================');
+      console.log(`Reset URL: ${resetURL}`);
+      console.log(`User: ${user.email}`);
+      console.log('==================================================');
+    }
 
-    console.log('✅ Password reset email sent successfully to:', user.email);
-    res.status(200).json({ message: 'Password reset link sent to your email' });
+    res.status(200).json({ message: 'Password reset link has been generated successfully' });
   } catch (error) {
     console.error('❌ Password Reset Error:', error.message);
     console.error('Full error:', error);
