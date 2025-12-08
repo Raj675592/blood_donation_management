@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useToast } from '../../contexts/ToastContext';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 
 function InventoryManagement() {
   const [inventory, setInventory] = useState([]);
@@ -19,7 +19,7 @@ function InventoryManagement() {
 
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
   const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
-  const fetchInventory = async () => {
+  const fetchInventory = useCallback(async () => {
     setError('');
     try {
       setLoading(true);
@@ -45,7 +45,7 @@ function InventoryManagement() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_BASE_URL]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -116,7 +116,7 @@ function InventoryManagement() {
     setError('');
     setSuccess('');
     try {
-      const response = await fetch(`http://localhost:8001/api/inventory/${itemId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/inventory/${itemId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ function InventoryManagement() {
 
   useEffect(() => {
     fetchInventory();
-  }, []);
+  }, [fetchInventory]);
 
   const handleFormChange = (e) => {
     setFormData({

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "../../css/Signup.css";
 import { useNavigate } from "react-router-dom";
 
@@ -24,14 +24,15 @@ function Signup() {
     setError("");
     setSuccess("");
     try {
-      const response = await fetch("http://localhost:8001/api/auth/signup", {
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+      const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
-      const data = await response.json();
+      const data = await response.json();   
       if (response.ok) {
         setSuccess("Signup successful!");
         setFormData({

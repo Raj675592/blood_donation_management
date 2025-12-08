@@ -171,7 +171,7 @@ const demoteToUser = async (req, res) => {
     await user.save();
     res.status(200).json({
       success: true,
-      message: "User demoted to user",
+      message: "User demoted to role: user",
       user: {
         id: user._id,
         name: user.name,

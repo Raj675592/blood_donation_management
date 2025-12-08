@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +22,7 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.2",
+    "nodemailer": "^7.0.11",
     "react-router-dom": "^7.9.5",
     "router": "^2.2.0",
     "uuid": "^13.0.0"

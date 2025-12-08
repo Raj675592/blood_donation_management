@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
 import "../../css/AdminDashboard.css";
 import { Link, useNavigate } from "react-router-dom";
-import Footer from "../../pages/Footer";
 import UserManagement from "./UserManagement";
 import AppointmentManagement from "./AppointmentManagement";
 import InventoryManagement from "./InventoryManagement";
 import BloodRequestManagement from "./BloodRequestManagement";
-import { useToast } from "../../contexts/ToastContext";
-
+import Footer from "../../pages/Footer.jsx";
 // Environment-based API configuration
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
 
@@ -22,11 +20,9 @@ function AdminDashboard() {
   const navigate = useNavigate();
   const [AdminDashboardData, setAdminDashboardData] = useState({});
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [activeSection, setActiveSection] = useState("dashboard");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { showToast } = useToast();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -98,6 +94,12 @@ function AdminDashboard() {
                 <div className="card-value">{AdminDashboardData.data?.stats?.totalUsers || '0'}</div>
                 <div className="card-subtitle">Registered Users</div>
               </div>
+
+
+
+
+
+
               <div className="dashboard-card">
                 <div className="card-title">Blood Requests</div>
                 <div className="card-value">{AdminDashboardData.data?.stats?.totalRequests || '0'}</div>
@@ -158,6 +160,7 @@ function AdminDashboard() {
   };
 
   return (
+    <>
     <div className="admin-layout">
       {/* Mobile Menu Button */}
       <button className={`mobile-menu-btn ${isMobileMenuOpen ? 'active' : ''}`} onClick={toggleMobileMenu}>
@@ -243,13 +246,15 @@ function AdminDashboard() {
             <Link to="/">Go to Home</Link>
           </div>
         )}
-        {success && activeSection === 'dashboard' && <div className="success-message">{success}</div>}
 
         <div className="content-body">
           {renderContent()}
         </div>
       </div>
+    
     </div>
+
+      </>
   );
 }
 

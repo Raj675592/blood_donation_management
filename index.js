@@ -18,11 +18,40 @@ const app = express();
 const PORT = process.env.PORT;
 const MONGO_URI = process.env.MONGO_URI;
 
+// CORS configuration - only allow origins from environment variables
+const rawClientUrls = "localhost:3000" || process.env.CLIENT_URL;
+const allowedOrigins = rawClientUrls
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+// Add localhost only in development
+if (process.env.NODE_ENV === "development") {
+  allowedOrigins.push("http://localhost:3000");
+}
+
+// Vercel pattern for rotating deployment URLs (backup for new deployments)
+const vercelProjectPattern =
+  /^https:\/\/blood-donation-frontend-[a-z0-9-]+-raj675592s-projects\.vercel\.app$/i;
+
 const corsOptions = {
-  origin: process.env.CLIENT_URL,
+  origin: (origin, callback) => {
+    // Allow non-browser requests (e.g., server-to-server) with no origin
+    if (!origin) return callback(null, true);
+
+    // Check explicit allowlist and Vercel pattern
+    if (allowedOrigins.includes(origin) || vercelProjectPattern.test(origin)) {
+      return callback(null, true);
+    }
+
+    // Log and reject unauthorized origins
+    console.warn(`CORS: Blocked unauthorized origin - ${origin}`);
+    return callback(new Error("Not allowed by CORS"));
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
@@ -36,12 +65,19 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "client/build")));
 }
 
+// Unified Health Check endpoint (single definition)
 app.get("/health", (req, res) => {
   res.status(200).json({
     success: true,
+    status: "OK",
     message: "Blood Donation Management API is running",
     timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
     port: PORT,
+    allowedOrigins: {
+      explicit: allowedOrigins,
+      vercelPattern: vercelProjectPattern.toString(),
+    },
   });
 });
 

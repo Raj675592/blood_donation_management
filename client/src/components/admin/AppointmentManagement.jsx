@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useToast } from '../../contexts/ToastContext';
 
 function AppointmentManagement() {
@@ -10,7 +10,7 @@ function AppointmentManagement() {
   const [statusFilter, setStatusFilter] = useState('all');
   const { showToast } = useToast();
   const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';  
-  const fetchAppointments = async () => {
+  const fetchAppointments = useCallback(async () => {
     setError('');
     try {
       setLoading(true);
@@ -34,7 +34,7 @@ function AppointmentManagement() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_BASE_URL, showToast]);
 
   const updateAppointmentStatus = async (appointmentId, newStatus) => {
     if (!window.confirm(`Are you sure you want to mark this appointment as ${newStatus}?`)) return;
@@ -147,7 +147,7 @@ function AppointmentManagement() {
 
   useEffect(() => {
     fetchAppointments();
-  }, []);
+  }, [fetchAppointments]);
 
   const filteredAppointments = appointments.filter(appointment => {
     const matchesSearch = appointment.userId?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||

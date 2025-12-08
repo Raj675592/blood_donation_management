@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useToast } from '../../contexts/ToastContext';
 
 function BloodRequestManagement() {
@@ -9,8 +9,9 @@ function BloodRequestManagement() {
   const { showToast } = useToast();
   const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
 
-  const fetchBloodRequests = async () => {
+  const fetchBloodRequests = useCallback(async () => {
     try {
+     
       setLoading(true);
       const response = await fetch(`${API_BASE_URL}/api/blood-requests`, {
         method: 'GET',
@@ -20,6 +21,7 @@ function BloodRequestManagement() {
         },
       });
       const data = await response.json();
+      
       if (data.success) {
         setBloodRequests(data.bloodRequests);
       } else {
@@ -30,13 +32,13 @@ function BloodRequestManagement() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_BASE_URL]);
 
   const handleRequestAction = async (requestId, action) => {
     console.log(`Attempting to ${action} blood request:`, requestId);
     
     try {
-      const url = `http://localhost:8001/api/blood-requests/${requestId}/${action}`;
+      const url = `${API_BASE_URL}/api/blood-requests/${requestId}/${action}`;
       console.log('Making request to:', url);
       
       const response = await fetch(url, {
@@ -69,7 +71,7 @@ function BloodRequestManagement() {
 
   useEffect(() => {
     fetchBloodRequests();
-  }, []);
+  }, [fetchBloodRequests]);
 
   const filteredRequests = bloodRequests.filter(request => {
     const matchesSearch = request.userId?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||

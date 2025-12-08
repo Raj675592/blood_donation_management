@@ -9,7 +9,8 @@ import BloodRequest from "./components/user/BloodRequest";
 import ScheduleAppointment from "./components/user/ScheduleAppointment";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import { ToastProvider } from "./contexts/ToastContext";
-
+import ForgotPassword from "./components/auth/Forgot-Password";
+import ResetPassword from "./components/auth/Reset-Password";
 function App() {
   return (
     <ToastProvider>
@@ -22,7 +23,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/dashboard" element={<UserDashboard />} />
             <Route path="/blood-request" element={<BloodRequest />} />
-            
+            <Route path="/request-password-reset" element={<ForgotPassword />} />
+            <Route path="/resetpassword" element={<ResetPassword />} />
             <Route path="/schedule-appointment" element={<ScheduleAppointment />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
           </Routes>

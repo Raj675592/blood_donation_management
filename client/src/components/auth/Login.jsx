@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/Login.css";
 
@@ -10,6 +10,7 @@ function Login() {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [updatePasswordModal, setUpdatePasswordModal] = useState(false);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -18,7 +19,8 @@ function Login() {
     setError("");
     setSuccess("");
     try {
-      const response = await fetch("http://localhost:8001/api/auth/login", {
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -50,6 +52,13 @@ function Login() {
       setError("Login failed.");
     }
   };
+
+
+const requestPasswordReset = () => {
+    navigate("/request-password-reset");
+  }
+
+
   return (
     <div className="login-container">
       {/* Left Content Area */}
@@ -140,9 +149,15 @@ function Login() {
           <button type="submit">Sign In to Blood Bank</button>
 
           <div className="login-link">
-            New to Blood Bank? <a href="/signup">Create Account</a>
+            New to Blood Bank? <a href="/signup" style={{color:"green"}}>Create Account</a>
           </div>
+          <div className="login-link">
+             <button onClick={requestPasswordReset} style={{background: "none", border: "none", color: "#ff1606ff", cursor: "pointer", padding: 0, fontSize: "1rem", textDecoration: "underline"}}>Forgot Password?</button>
+          </div>
+         
         </form>
+ 
+
       </div>
     </div>
   );

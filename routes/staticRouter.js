@@ -26,6 +26,7 @@ router.get("/", serveReactApp);
 router.get("/login", serveReactApp);
 router.get("/signup", serveReactApp);
 
+
 // Information pages
 router.get("/about", serveReactApp);
 router.get("/contact", serveReactApp);

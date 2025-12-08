@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useToast } from '../../contexts/ToastContext';
 
 function UserManagement() {
@@ -14,7 +14,8 @@ function UserManagement() {
     setError('');
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8001/api/admin/users', {
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+      const response = await fetch(`${API_BASE_URL}/api/admin/users`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -39,7 +40,8 @@ function UserManagement() {
     setError('');
     setSuccess('');
     try {
-      const response = await fetch(`http://localhost:8001/api/admin/promote/${userId}`, {
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+      const response = await fetch(`${API_BASE_URL}/api/admin/promote/${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -66,7 +68,8 @@ function UserManagement() {
     setError('');
     setSuccess('');
     try {
-      const response = await fetch(`http://localhost:8001/api/admin/demote/${userId}`, {
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+      const response = await fetch(`${API_BASE_URL}/api/admin/demote/${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -94,7 +97,8 @@ function UserManagement() {
     setError('');
     setSuccess('');
     try {
-      const response = await fetch(`http://localhost:8001/api/admin/users/${userId}`, {
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+      const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -116,7 +120,7 @@ function UserManagement() {
     }
   };
 
-  useEffect(() => {
+  useCallback(() => {
     fetchUsers();
   }, []);
 

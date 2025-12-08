@@ -1,21 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/userDashboard.css";
 import Footer from "../../pages/Footer";
 import { useToast } from "../../contexts/ToastContext";
-import { NotificationService } from "../../services/NotificationService";
 
 function UserDashboard() {
   const navigate = useNavigate();
+  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [modal, setModal] = useState(false);
   const { showToast } = useToast();
-  const [lastCheckTimestamp, setLastCheckTimestamp] = useState(null);
-  const cancelAppointment = () => {
-    // Logic to cancel the appointment
-  };
+  
   const [updateData, setUpdateData] = useState({
     bloodType: "",
     phone: "",
@@ -28,7 +25,7 @@ function UserDashboard() {
       setError("");
 
       const response = await fetch(
-        "http://localhost:8001/api/users/update-profile",
+        `${API_BASE_URL}/api/users/update-profile`,
         {
           method: "PUT",
           headers: {
@@ -63,11 +60,15 @@ function UserDashboard() {
       setLoading(false);
     }
   };
-  const getUserDashboard = async () => {
+  const getUserDashboard = useCallback(async () => {
     try {
+      if(!localStorage.getItem("token")) {
+        navigate("/login");
+        return;
+      }
       setLoading(true);
       const response = await fetch(
-        "http://localhost:8001/api/users/dashboard",
+        `${API_BASE_URL}/api/users/dashboard`,
         {
           method: "GET",
           headers: {
@@ -98,10 +99,10 @@ function UserDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate, API_BASE_URL]);
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://localhost:8001/api/users/logout", {
+      const response = await fetch(`${API_BASE_URL}/api/users/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -121,10 +122,9 @@ function UserDashboard() {
   };
 
   // Check for status changes in user's blood requests
-  const checkForNotifications = async () => {
+  const checkForNotifications = useCallback(async () => {
     try {
       if (dashboardData?.bloodRequests) {
-        const currentTimestamp = new Date().toISOString();
         
         // Check for status changes
         dashboardData.bloodRequests.forEach(request => {
@@ -147,24 +147,23 @@ function UserDashboard() {
           // Store current status
           localStorage.setItem(statusChangeKey, request.status);
         });
-        
-        setLastCheckTimestamp(currentTimestamp);
+
       }
     } catch (error) {
       console.error('Error checking notifications:', error);
     }
-  };
+  }, [dashboardData?.bloodRequests, showToast]);
 
   useEffect(() => {
     getUserDashboard();
-  }, []);
+  }, [getUserDashboard]);
 
   // Check for notifications every time dashboard data changes
   useEffect(() => {
     if (dashboardData) {
       checkForNotifications();
     }
-  }, [dashboardData]);
+  }, [dashboardData, checkForNotifications]);
 
   if (loading) {
     return (

@@ -474,7 +474,6 @@ app.use(morgan('combined'));
 - [Vercel Documentation](https://vercel.com/docs)
 - [Netlify Documentation](https://docs.netlify.com)
 - [MongoDB Atlas Docs](https://docs.atlas.mongodb.com)
-
 ### Troubleshooting
 - Check application logs
 - Verify environment variables

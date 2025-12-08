@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "../../css/BloodRequest.css";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../pages/Footer";
@@ -7,11 +7,8 @@ import { useToast } from "../../contexts/ToastContext";
 function ScheduleAppointment() {
   const navigate = useNavigate();
   const { showToast } = useToast();
-  const cancelAppointment = () => {
-    
-
-   
-  };
+  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+  
   const [formData, setFormData] = useState({
    
     name: "",
@@ -35,7 +32,7 @@ function ScheduleAppointment() {
     
     try {
       const response = await fetch(
-        "http://localhost:8001/api/users/schedule-appointment",
+        `${API_BASE_URL}/api/users/schedule-appointment`,
         {
           method: "POST",
           headers: {
@@ -77,8 +74,7 @@ function ScheduleAppointment() {
     }
   };
 
-
-return (
+  return (
   <>
   <div className="blood-request-container">
     <div className="blood-request-header">
