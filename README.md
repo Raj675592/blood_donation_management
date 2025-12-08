@@ -20,6 +20,7 @@ A modern, full-stack blood donation management platform built with **React.js** 
 - **MongoDB** - Database with Mongoose ODM
 - **JWT** - Authentication system
 - **Bcrypt** - Password hashing
+- **Nodemailer** - Email service for password reset
 - **CORS** - Cross-origin resource sharing
 
 ### Development Tools
@@ -34,6 +35,7 @@ A modern, full-stack blood donation management platform built with **React.js** 
   - Simple signup (no email verification)
   - JWT-based login system
   - Basic profile management
+  - **Forgot Password** - Email-based password reset with secure token
   
 - **Blood Donation**
   - Schedule donation appointments
@@ -236,12 +238,13 @@ client/
 - **CORS Protection**: Configured for secure cross-origin requests
 - **Input Validation**: Comprehensive validation on all inputs
 - **Environment Variables**: Sensitive data stored securely
-
 ## 🚀 API Endpoints
 
 ### Authentication
 - `POST /api/auth/login` - User login
 - `POST /api/auth/signup` - User registration
+- `POST /api/auth/requestPasswordReset` - Request password reset (sends email)
+- `POST /api/auth/resetPassword` - Reset password with token
 
 ### User Operations
 - `GET /api/user/profile` - Get user profile
@@ -253,6 +256,34 @@ client/
 - `GET /api/admin/users` - Manage users
 - `GET /api/admin/inventory` - Blood inventory management
 - `GET /api/admin/appointments` - Appointment management
+- `GET /api/admin/requests` - Blood request management
+
+## 🔐 Forgot Password Feature
+### Environment Variables
+Create a `.env` file in the root directory:
+```env
+MONGO_URI=mongodb://localhost:27017/bloodbank
+JWT_SECRET=your_super_secret_jwt_key_here
+PORT=8001
+NODE_ENV=development
+CLIENT_URL=http://localhost:3000
+EMAIL_USER=your-gmail@gmail.com
+EMAIL_PASS=your-gmail-app-password
+### How It Works
+1. User enters email on forgot password page
+2. System generates secure JWT token (expires in 1 hour)
+3. Email sent with reset link to user's inbox
+4. User clicks link and enters new password
+5. Password updated and all old tokens invalidated
+
+### Email Configuration
+Required environment variables in `.env`:
+```env
+EMAIL_USER=your-gmail@gmail.com
+EMAIL_PASS=your-gmail-app-password
+```
+
+**Note**: Use Gmail App Password (not regular password). Generate at: https://myaccount.google.com/apppasswordsnt
 - `GET /api/admin/requests` - Blood request management
 
 ## 🔧 Configuration
