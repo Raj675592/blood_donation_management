@@ -714,12 +714,7 @@ export default new ApiService();
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👥 Team
 
-- **Frontend Developer**: React.js, UI/UX Design
-- **Backend Developer**: Node.js, Express.js, MongoDB
-- **DevOps Engineer**: Deployment, CI/CD, Monitoring
-- **Project Manager**: Coordination, Planning, Testing
 
 ---
 
