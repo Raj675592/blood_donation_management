@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/Login.css";
-
+import { useToast } from "../../contexts/ToastContext";
+import "../../css/Forgot-Password.css";
 function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ function Login() {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [forgotModal, setForgotModal] = useState(false);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -18,7 +20,8 @@ function Login() {
     setError("");
     setSuccess("");
     try {
-      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+      const API_BASE_URL =
+        process.env.REACT_APP_API_URL || "http://localhost:8001";
       const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: {
@@ -52,39 +55,47 @@ function Login() {
     }
   };
 
+  const [email, setEmail] = useState("");
+  const [message] = useState(
+    "If an account with that email exists, a password reset link has been sent."
+  );
+  const { showToast } = useToast();
 
-const requestPasswordReset = () => {
-    navigate("/request-password-reset");
-  }
+  const handleSubmitPasswordReset = useCallback(
+    async (e) => {
+      e.preventDefault();
+      try {
+        const API_BASE_URL =
+          process.env.REACT_APP_API_URL || "http://localhost:8001";
+        const response = await fetch(
+          `${API_BASE_URL}/api/auth/requestPasswordReset`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email }),
+          }
+        );
+        const data = await response.json();
+        console.log(data);
 
+        if (response.ok) {
+          showToast(data.message || message, "success");
+          setEmail("");
+        } else {
+          showToast(data.message || message, "info");
+        }
+      } catch (error) {
+        showToast(message, "info");
+      }
+    },
+    [email, message, showToast]
+  );
 
   return (
     <div className="login-container">
-      {/* Left Content Area */}
-      <div className="login-left-content">
-        <button 
-          className="home-button"
-          onClick={() => navigate("/")}
-          style={{ marginBottom: '20px', width:"200px" }}
-        >
-          ← Go To Home
-        </button>
-
-        <h1 className="login-title">Welcome Back</h1>
-        <p className="login-subtitle">
-          Continue your journey of saving lives through blood donation. Your
-          account helps us connect you with those in need.
-        </p>
-        <ul className="login-features">
-          <li>Access your donation history</li>
-          <li>Schedule new appointments</li>
-          <li>Track your impact on lives saved</li>
-          <li>Connect with donation centers</li>
-          <li>Receive important health updates</li>
-        </ul>
-      </div>
-
-      {/* Right Form Area */}
+      {/* right form Area */}
       <div className="login-form-container">
         <form onSubmit={handleSubmit} className="login-form">
           <h2 className="form-title">Sign In</h2>
@@ -148,15 +159,91 @@ const requestPasswordReset = () => {
           <button type="submit">Sign In to Blood Bank</button>
 
           <div className="login-link">
-            New to Blood Bank? <a href="/signup" style={{color:"green"}}>Create Account</a>
+            New to Blood Bank?{" "}
+            <a href="/signup" style={{ color: "green" }}>
+              Create Account
+            </a>
           </div>
           <div className="login-link">
-             <button onClick={requestPasswordReset} style={{background: "none", border: "none", color: "#ff1606ff", cursor: "pointer", padding: 0, fontSize: "1rem", textDecoration: "underline"}}>Forgot Password?</button>
+            <button
+              onClick={ () => setForgotModal(true)}
+              style={{
+                background: "none",
+                border: "none",
+                
+                color: "#ff1606ff",
+                cursor: "pointer",
+                padding: 0,
+                fontSize: "1rem",
+                textDecoration: "none",
+              }}
+            >
+              Forgot Password?
+            </button>
           </div>
-         
         </form>
- 
-
+      </div>
+      {forgotModal && (
+        <div className="modal-overlay">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h3>Update Password</h3>
+                  <button
+                    onClick={() => setForgotModal(false)}
+                    className="modal-close"
+                  >
+                    ×
+                  </button>
+                </div>
+                {error && <div className="error-message">{error}</div>}
+                <form
+                  onSubmit={handleSubmitPasswordReset}
+                  className="update-form"
+                >
+                  <label htmlFor="email">Enter your email address:</label>
+                <input
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                />
+                
+                 
+                  <div className="modal-actions">
+                    <button
+                      type="button"
+                      onClick={() => setForgotModal(false)}
+                      className="cancel-btn"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="update-btn"
+                     
+                    >
+                      Request Password Reset
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+      )}
+      {/* left content Area */}
+      <div className="login-left-content">
+        <h1 className="login-title">Welcome Back</h1>
+        <p className="login-subtitle">
+          Continue your journey of saving lives through blood donation. Your
+          account helps us connect you with those in need.
+        </p>
+        <ul className="login-features">
+          <li>Access your donation history</li>
+          <li>Schedule new appointments</li>
+          <li>Track your impact on lives saved</li>
+          <li>Connect with donation centers</li>
+          <li>Receive important health updates</li>
+        </ul>
       </div>
     </div>
   );

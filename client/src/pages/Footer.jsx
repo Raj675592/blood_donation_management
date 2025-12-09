@@ -22,7 +22,7 @@ function Footer(){
                             <h4>Quick Links</h4>
                             <ul>
                                 <li><Link to="/">Home</Link></li>
-                                <li><Link to="/about">About Us</Link></li>
+                               
                                 <li><Link to="/signup">Become a Donor</Link></li>
                                 <li><Link to="/login">Sign In</Link></li>
                             </ul>
@@ -41,11 +41,7 @@ function Footer(){
                         <p className="copyright">
                             &copy; 2025 BloodBank. All rights reserved. Made with ❤️ for saving lives.
                         </p>
-                        <div className="footer-bottom-links">
-                            <Link to="/privacy">Privacy Policy</Link>
-                            <Link to="/terms">Terms of Service</Link>
-                            <Link to="/cookies">Cookie Policy</Link>
-                        </div>
+                       
                     </div>
                 </div>
             </div>

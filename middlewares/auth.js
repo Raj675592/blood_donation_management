@@ -11,29 +11,24 @@ const checkAuth = (req, res, next) => {
     }
 
     if (!token) {
-      console.log("No token provided in request");
+      
       return res.status(401).json({
         success: false,
         message: "Access denied. Please log in to continue.",
       });
     }
 
-    console.log("Token found, verifying...");
+    
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
-        console.log("Token verification failed:", err.message);
+      
         return res.status(401).json({
           success: false,
           message: "Invalid or expired token. Please log in again.",
         });
       }
 
-      console.log(
-        "Token verified successfully for user:",
-        decoded.name,
-        "Role:",
-        decoded.role
-      );
+      
       req.user = decoded;
       next();
     });

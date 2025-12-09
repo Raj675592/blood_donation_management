@@ -1,0 +1,7 @@
+frontend
+cd client 
+npm start
+
+backend : open another terminal
+nodemon index.js
+

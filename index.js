@@ -123,10 +123,9 @@ const startServer = async () => {
 
     app.listen(PORT, () => {
       console.log("🩸 Blood Donation Management System");
-
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`📡 API Base URL: http://localhost:${PORT}/api`);
-      console.log(`🏥 Health Check: http://localhost:${PORT}/health`);
+      console.log(`🏥 API response check: http://localhost:${PORT}/health`);
     });
   } catch (error) {
     console.error("❌ Failed to start server:", error.message);

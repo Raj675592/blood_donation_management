@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useToast } from '../../contexts/ToastContext';
 
 function UserManagement() {
@@ -120,7 +120,7 @@ function UserManagement() {
     }
   };
 
-  useCallback(() => {
+  useEffect(() => {
     fetchUsers();
   }, []);
 

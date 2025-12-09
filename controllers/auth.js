@@ -18,9 +18,9 @@ const generateToken = (userId, email, role, name) => {
 
 const signup = async (req, res) => {
   try {
-    console.log("=== SIGNUP ROUTE HIT ===");
-    console.log("Request body:", req.body);
-    const { name, email, password, phone, bloodType, dateOfBirth, gender } =
+    
+   
+    const { name, email, password, phone, bloodType, dateOfBirth, gender, address  } =
       req.body;
 
     if (
@@ -30,7 +30,7 @@ const signup = async (req, res) => {
       !phone ||
       !bloodType ||
       !dateOfBirth ||
-      !gender
+      !gender || !address
     ) {
       return res.status(400).json({
         success: false,
@@ -63,6 +63,7 @@ const signup = async (req, res) => {
       bloodType,
       dateOfBirth: new Date(dateOfBirth),
       gender,
+      address,
       role: "user",
     });
 
@@ -78,6 +79,7 @@ const signup = async (req, res) => {
         bloodType: newUser.bloodType,
         dateOfBirth: newUser.dateOfBirth,
         gender: newUser.gender,
+        address: newUser.address,
         role: newUser.role,
       },
     });
@@ -109,7 +111,7 @@ const login = async (req, res) => {
       });
     }
 
-    console.log("User found:", user.email, user.hashedPassword);
+    
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
@@ -129,8 +131,7 @@ const login = async (req, res) => {
       maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
     });
 
-    console.log("Token generated and cookie set");
-    console.log("User logged in:", user.email);
+    
     res.status(200).json({
       success: true,
       message: "Login successful",
@@ -242,26 +243,89 @@ const requestPasswordReset = async (req, res, next) => {
       replyTo: 'noreply@blooddonation.com',
       subject: 'Blood Donation Management - Password Reset Request',
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #dc143c;">Password Reset Request</h2>
-          <p>Hello,</p>
-          <p>You are receiving this email because you (or someone else) have requested to reset the password for your account.</p>
-          <p>Please click on the button below to reset your password:</p>
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${resetURL}" style="background-color: #dc143c; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 650px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+          
+          <!-- Header Section -->
+          <div style="background: linear-gradient(135deg, #dc143c 0%, #b91230 100%); padding: 30px 20px; text-align: center;">
+            <div style="background-color: white; width: 60px; height: 60px; margin: 0 auto 15px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+              <span style="font-size: 32px;">🩸</span>
+            </div>
+            <h1 style="color: white; margin: 0; font-size: 26px; font-weight: 600; letter-spacing: 0.5px;">Blood Donation Management System</h1>
+            <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0; font-size: 14px;">Saving Lives Together</p>
           </div>
-          <p>Or copy and paste this link in your browser:</p>
-          <p style="color: #666; word-break: break-all;">${resetURL}</p>
-          <p style="color: #999; font-size: 12px; margin-top: 30px;">This link will expire in 1 hour.</p>
-          <p style="color: #999; font-size: 12px;">If you did not request this, please ignore this email and your password will remain unchanged.</p>
-          <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-          <p style="color: #999; font-size: 11px; text-align: center;">This is an automated email. Please do not reply to this message.</p>
+
+          <!-- Main Content -->
+          <div style="padding: 40px 30px;">
+            <h2 style="color: #333; font-size: 22px; margin: 0 0 20px 0; font-weight: 600;">Password Reset Request</h2>
+            
+            <p style="color: #555; line-height: 1.8; font-size: 15px; margin: 0 0 15px 0;">Dear Valued Member,</p>
+            
+            <p style="color: #555; line-height: 1.8; font-size: 15px; margin: 0 0 15px 0;">
+              We received a request to reset the password for your Blood Donation Management System account. We understand that security is important to you, and we're here to help you regain access to your account quickly and safely.
+            </p>
+
+            <p style="color: #555; line-height: 1.8; font-size: 15px; margin: 0 0 25px 0;">
+              To proceed with resetting your password, please click the button below. This secure link will take you to a page where you can create a new password for your account.
+            </p>
+
+            <!-- Reset Button -->
+            <div style="text-align: center; margin: 35px 0;">
+              <a href="${resetURL}" style="background: linear-gradient(135deg, #dc143c 0%, #b91230 100%); color: white; padding: 14px 40px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3); transition: all 0.3s;">
+                🔐 Reset My Password
+              </a>
+            </div>
+
+            <!-- Alternative Link -->
+            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 6px; margin: 25px 0; border-left: 4px solid #dc143c;">
+              <p style="color: #666; margin: 0 0 10px 0; font-size: 14px; font-weight: 600;">Alternative Method:</p>
+              <p style="color: #666; margin: 0 0 8px 0; font-size: 13px;">If the button above doesn't work, copy and paste the following link into your web browser:</p>
+              <p style="color: #dc143c; word-break: break-all; font-size: 12px; margin: 0; font-family: 'Courier New', monospace; background-color: white; padding: 10px; border-radius: 4px; border: 1px solid #e0e0e0;">${resetURL}</p>
+            </div>
+
+            <!-- Important Information -->
+            <div style="background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 18px; margin: 25px 0;">
+              <p style="color: #856404; margin: 0 0 10px 0; font-weight: 600; font-size: 14px;">⚠️ Important Security Information:</p>
+              <ul style="color: #856404; margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.8;">
+                <li>This password reset link will <strong>expire in 1 hour</strong> for security reasons</li>
+                <li>If you didn't request this password reset, please ignore this email</li>
+                <li>Your password will remain unchanged if you don't click the link</li>
+                <li>Never share your password reset link with anyone</li>
+                <li>Our team will never ask for your password via email</li>
+              </ul>
+            </div>
+
+            <p style="color: #555; line-height: 1.8; font-size: 15px; margin: 25px 0 15px 0;">
+              If you continue to experience issues or if you did not initiate this request, please contact our support team immediately for assistance. We take the security of your account very seriously.
+            </p>
+
+            <p style="color: #555; line-height: 1.8; font-size: 15px; margin: 0 0 10px 0;">
+              Thank you for being a part of our life-saving community.
+            </p>
+
+            <p style="color: #555; line-height: 1.8; font-size: 15px; margin: 0;">
+              <strong>Best regards,</strong><br>
+              Blood Donation Management Team<br>
+              <span style="color: #dc143c; font-weight: 600;">Saving Lives, One Donation at a Time 💉</span>
+            </p>
+          </div>
+
+          <!-- Footer -->
+          <div style="background-color: #f8f9fa; padding: 25px 30px; border-top: 1px solid #e0e0e0;">
+            <p style="color: #999; font-size: 12px; margin: 0 0 8px 0; text-align: center; line-height: 1.6;">
+              This is an automated email from Blood Donation Management System. Please do not reply to this message.
+            </p>
+            <p style="color: #999; font-size: 11px; margin: 0; text-align: center; line-height: 1.6;">
+              © ${new Date().getFullYear()} Blood Donation Management System. All rights reserved.<br>
+              Need help? Contact us at support@dummy.com
+            </p>
+          </div>
+
         </div>
       `,
     };
 
     await transporter.sendMail(mailOptions);
-    console.log('✅ Password reset email sent successfully to:', user.email);
+    
     res.status(200).json({ message: 'Password reset link sent to your email' });
   } catch (error) {
     console.error('❌ Password Reset Error:', error.message);
@@ -273,7 +337,7 @@ const requestPasswordReset = async (req, res, next) => {
 // Update Profile Controller
 const updateProfile = async (req, res) => {
   try {
-    console.log("=== UPDATE PROFILE ROUTE HIT ===");
+   
 
     const { bloodType, phone, dateOfBirth, gender } = req.body;
 
@@ -296,13 +360,10 @@ const updateProfile = async (req, res) => {
       { new: true, select: "-password" }
     );
 
-    console.log(
-      "User update result:",
-      updatedUser ? "✅ SUCCESS" : "❌ FAILED"
-    );
+   
 
     if (!updatedUser) {
-      console.log("❌ User not found in database for ID:", req.user.id);
+      
       return res.status(404).json({
         success: false,
         message: "User not found",
@@ -314,7 +375,7 @@ const updateProfile = async (req, res) => {
       message: "Profile updated successfully",
       user: updatedUser,
     });
-    console.log("✅ Profile update response sent");
+    
   } catch (error) {
     console.error("❌ Update profile error:", error);
     console.error("Error stack:", error.stack);

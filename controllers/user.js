@@ -4,23 +4,20 @@ const BloodRequest = require("../models/BloodRequest");
 
 const getUserDashboard = async (req, res) => {
   try {
-    console.log("Dashboard request received for user:", req.user.id);
+  
 
     // Check if user exists
     const user = await User.findById(req.user.id).select("-password");
 
     if (!user) {
-      console.log("User not found:", req.user.id);
+    
       return res.status(404).json({
         success: false,
         message: "User not found",
       });
     }
 
-    console.log("User found:", user.name, user.email);
-
-    // Get user's appointments with aggregated data
-    console.log("Fetching appointment stats...");
+   
     const appointmentStats = await Appointment.aggregate([
       { $match: { userId: user._id } },
       {
@@ -30,17 +27,14 @@ const getUserDashboard = async (req, res) => {
         },
       },
     ]);
-    console.log("Appointment stats:", appointmentStats);
+
 
     // Get all appointments
-    console.log("Fetching recent appointments...");
+   
     const recentAppointments = await Appointment.find({ userId: user._id })
       .sort({ appointmentDate: -1 })
       .select("appointmentDate timeSlot location status");
-    console.log("Recent appointments count:", recentAppointments.length);
-
-    // Get user's blood requests with stats
-    console.log("Fetching blood request stats...");
+  
     const bloodRequestStats = await BloodRequest.aggregate([
       { $match: { userId: user._id } },
       {
@@ -50,21 +44,21 @@ const getUserDashboard = async (req, res) => {
         },
       },
     ]);
-    console.log("Blood request stats:", bloodRequestStats);
+   
 
     // Get all blood requests
-    console.log("Fetching recent blood requests...");
+   
     const recentBloodRequests = await BloodRequest.find({ userId: user._id })
       .sort({ createdAt: -1 })
       .select(
         "patientName bloodType unitsNeeded urgencyLevel status hospitalName createdAt"
       );
-    console.log("Recent blood requests count:", recentBloodRequests.length);
+   
 
     // Calculate total donations (completed appointments) - with safety check
     const totalDonations =
       appointmentStats.find((stat) => stat._id === "completed")?.count || 0;
-    console.log("Total donations calculated:", totalDonations);
+
 
     // Calculate next upcoming appointment
     const upcomingAppointment = await Appointment.findOne({
@@ -126,9 +120,7 @@ const getUserDashboard = async (req, res) => {
 };
 const bloodRequest = async (req, res) => {
   try {
-    console.log("Blood Request route hit");
-    console.log("Processing the blood requests for user:", req.user.id);
-    console.log("Request Body:", req.body);
+    
 
     const {
       patientName,
@@ -196,8 +188,7 @@ const bloodRequest = async (req, res) => {
 
 const scheduleAppointment = async (req, res) => {
   try {
-    console.log("Scheduling appointment for user:", req.user.id);
-    console.log("Request body:", req.body);
+
 
     const {
       name,
@@ -273,7 +264,7 @@ const scheduleAppointment = async (req, res) => {
       DOB: user.dateOfBirth, // Get from authenticated user data
     });
 
-    console.log("Appointment created successfully:", newAppointment._id);
+   
 
     res.status(201).json({
       success: true,

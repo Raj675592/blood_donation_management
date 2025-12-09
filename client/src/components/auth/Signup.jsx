@@ -13,6 +13,7 @@ function Signup() {
     gender: "",
     bloodType: "",
     role: "user",
+    address: "",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -24,7 +25,8 @@ function Signup() {
     setError("");
     setSuccess("");
     try {
-      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+      const API_BASE_URL =
+        process.env.REACT_APP_API_URL || "http://localhost:8001";
       const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
         method: "POST",
         headers: {
@@ -32,7 +34,7 @@ function Signup() {
         },
         body: JSON.stringify(formData),
       });
-      const data = await response.json();   
+      const data = await response.json();
       if (response.ok) {
         setSuccess("Signup successful!");
         setFormData({
@@ -54,36 +56,7 @@ function Signup() {
   };
   return (
     <div className="signup-container">
-      {/* Left Content Area */}
-      <div className="signup-left-content">
-        <div className="home-button">
-          <button className="home-button"
-            onClick={() => {
-              navigate("/");
-            }}
-          >
-            Go To Home
-          </button>
-        </div>
-        <h1 className="signup-title">
-          Save Lives
-          <br />
-          Donate Blood
-        </h1>
-        <p className="signup-subtitle">
-          Join our community of life-savers and help those in need. Your
-          donation can save up to three lives.
-        </p>
-        <ul className="signup-features">
-          <li>Safe and secure donation process</li>
-          <li>Track your donation history</li>
-          <li>Find nearby donation centers</li>
-          <li>Connect with fellow donors</li>
-          <li>Make a real difference in lives</li>
-        </ul>
-      </div>
-
-      {/* Right Form Area */}
+      {/* right form Area */}
       <div className="signup-form-container">
         <form onSubmit={handleSubmit} className="signup-form">
           <h2 className="form-title">Create Account</h2>
@@ -133,6 +106,17 @@ function Signup() {
               name="email"
               placeholder="Email Address"
               value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="email">Permanent Address</label>
+            <input
+              type="text"
+              name="address"
+              placeholder="Permanent Address"
+              value={formData.address}
               onChange={handleChange}
               required
             />
@@ -208,6 +192,26 @@ function Signup() {
             Already have an account? <a href="/login">Sign In</a>
           </div>
         </form>
+      </div>
+
+      {/* left Area */}
+      <div className="signup-left-content">
+        <h1 className="signup-title">
+          Save Lives
+          <br />
+          Donate Blood
+        </h1>
+        <p className="signup-subtitle">
+          Join our community of life-savers and help those in need. Your
+          donation can save up to three lives.
+        </p>
+        <ul className="signup-features">
+          <li>Safe and secure donation process</li>
+          <li>Track your donation history</li>
+          <li>Find nearby donation centers</li>
+          <li>Connect with fellow donors</li>
+          <li>Make a real difference in lives</li>
+        </ul>
       </div>
     </div>
   );
