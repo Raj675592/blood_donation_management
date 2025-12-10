@@ -19,6 +19,7 @@ function UserDashboard() {
     dateOfBirth: "",
     gender: "",
   });
+
   const updateProfile = async (updatedData) => {
     try {
       setLoading(true);
@@ -100,27 +101,36 @@ function UserDashboard() {
       setLoading(false);
     }
   }, [navigate, API_BASE_URL]);
-  const handleLogout = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/users/logout`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+ 
+const handleLogout = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/auth/logout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
 
-      if (!response.ok) {
-        throw new Error("Failed to log out");
-      }
-
-      localStorage.removeItem("token");
-    } catch (error) {
-      console.error("Error logging out:", error);
+    if (response.ok) {
+      // Clear all stored data
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      sessionStorage.clear();
+      
+      // Navigate to home
+      navigate('/');
+    } else {
+      throw new Error('Logout failed');
     }
-    navigate("/login");
-  };
-
+  } catch (error) {
+    console.error('Logout error:', error);
+    // Still clear local data even if server request fails
+    localStorage.clear();
+    sessionStorage.clear();
+    navigate('/');
+  }
+};
   // Check for status changes in user's blood requests
   const checkForNotifications = useCallback(async () => {
     try {
@@ -539,6 +549,13 @@ function UserDashboard() {
                 >
                   Edit Profile
                 </button>
+                <button
+                onClick={() => navigate("/inventory")}
+                className="action-btn inventory"
+              >
+                <span className="btn-icon">🩸</span>
+                Available Inventory 
+              </button>
               </div>
             </div>
           </div>

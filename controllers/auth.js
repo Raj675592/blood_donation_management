@@ -157,18 +157,23 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  try {
-    res.clearCookie("token");
-
+ try {
+    const token = req.headers.authorization?.split(' ')[1];
+    
+    // Add token to blacklist
+    await TokenBlacklist.create({
+      token,
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+    });
+    
     res.status(200).json({
       success: true,
-      message: "Logged out successfully",
+      message: 'Logged out successfully'
     });
   } catch (error) {
-    console.error("Logout error:", error);
     res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: 'Logout failed'
     });
   }
 };

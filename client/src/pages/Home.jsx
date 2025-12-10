@@ -1,34 +1,128 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "../css/Home.css";
 import Footer from "./Footer";
+
 const Home = () => {
-  if (localStorage.getItem("token")) {
-    if (
-      JSON.parse(atob(localStorage.getItem("token").split(".")[1])).role ===
-      "admin"
-    ) {
-      window.location.href = "/admin-dashboard";
-    } else {
-      window.location.href = "/dashboard";
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [userName, setUserName] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+      // Decode token to get user info
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        if (payload.role === "admin") {
+          window.location.href = "/admin-dashboard";
+        }
+        // Get user name from token or localStorage
+        if (payload.name) {
+          setUserName(payload.name);
+        } else if (payload.firstName) {
+          setUserName(payload.firstName);
+        }
+      } catch (e) {
+        console.error("Invalid token");
+      }
+      
+      // If name not in token, try fetching from user data in localStorage
+      const userData = localStorage.getItem("user");
+      if (userData) {
+        try {
+          const user = JSON.parse(userData);
+          if (user.name) {
+            setUserName(user.name);
+          } else if (user.firstName) {
+            setUserName(user.firstName);
+          }
+        } catch (e) {
+          console.error("Invalid user data");
+        }
+      }
     }
-  }
+  }, []);
+
+  // Get first letter of name for avatar
+  const getInitial = () => {
+    if (userName && userName.length > 0) {
+      return userName.charAt(0).toUpperCase();
+    }
+    return "U";
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+    setShowDropdown(false);
+    navigate("/");
+  };
+
+  const goToDashboard = () => {
+    setShowDropdown(false);
+    navigate("/dashboard");
+  };
+
   return (
     <div className="home-container">
-      {/* Navigation Header */}
-      {/* <nav className="navbar">
-        <div className="nav-container">
-          <div className="nav-logo">
-          
-            <span className="logo-text">BloodBank</span>
-          </div>
-          <div className="nav-links">
-            <Link to="/login" className="nav-link">Login</Link>
-            <Link to="/signup" className="nav-btn">Get Started</Link>
-           
-          </div>
+      {/* Navbar */}
+      <nav className="home-navbar">
+        <div className="navbar-brand">
+          <span className="brand-icon">🩸</span>
+          <span className="brand-text">Blood Bank</span>
         </div>
-      </nav> */}
+        <div className="navbar-actions">
+          {isLoggedIn ? (
+            <div className="profile-menu">
+              <button 
+                className="profile-btn"
+                onClick={() => setShowDropdown(!showDropdown)}
+              >
+                <div className="profile-avatar-letter">
+                  {getInitial()}
+                </div>
+              </button>
+              {showDropdown && (
+                <div className="profile-dropdown">
+                  {userName && (
+                    <div className="dropdown-header">
+                      <div className="dropdown-avatar">{getInitial()}</div>
+                      <span className="dropdown-name">{userName}</span>
+                    </div>
+                  )}
+                  <hr className="dropdown-divider" />
+                  <button onClick={goToDashboard} className="dropdown-item">
+                    <span>📊</span> Dashboard
+                  </button>
+                  <button onClick={() => { setShowDropdown(false); navigate("/inventory"); }} className="dropdown-item">
+                    <span>🩸</span> Inventory
+                  </button>
+                  <button onClick={() => { setShowDropdown(false); navigate("/blood-request"); }} className="dropdown-item">
+                    <span>💉</span> Request Blood
+                  </button>
+                  <hr className="dropdown-divider" />
+                  <button onClick={handleLogout} className="dropdown-item logout-item">
+                    <span>🚪</span> Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <>
+              <Link to="/login" className="nav-btn nav-btn-outline">
+                Sign In
+              </Link>
+              <Link to="/signup" className="nav-btn nav-btn-filled">
+                Sign Up
+              </Link>
+            </>
+          )}
+        </div>
+      </nav>
 
       {/* Hero Section */}
       <section className="hero-section">
@@ -68,8 +162,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-     
 
       <Footer />
     </div>

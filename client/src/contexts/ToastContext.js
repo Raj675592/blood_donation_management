@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import Toast from '../components/common/Toast';
 
 const ToastContext = createContext();
@@ -14,7 +14,11 @@ export const useToast = () => {
 export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
 
-  const showToast = (message, type = 'success') => {
+  const hideToast = useCallback((id) => {
+    setToasts(prevToasts => prevToasts.filter(toast => toast.id !== id));
+  }, []);
+
+  const showToast = useCallback((message, type = 'success') => {
     const id = Date.now();
     const newToast = { id, message, type, isVisible: true };
     
@@ -24,11 +28,7 @@ export const ToastProvider = ({ children }) => {
     setTimeout(() => {
       hideToast(id);
     }, 5000);
-  };
-
-  const hideToast = (id) => {
-    setToasts(prevToasts => prevToasts.filter(toast => toast.id !== id));
-  };
+  }, [hideToast]);
 
   return (
     <ToastContext.Provider value={{ showToast }}>

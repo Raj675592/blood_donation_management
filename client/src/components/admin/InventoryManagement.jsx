@@ -291,7 +291,7 @@ function InventoryManagement() {
                     </div>
                   )}
                   <div className="detail-item">
-                    <strong>Updated:</strong> {new Date(item.updatedAt).toLocaleDateString()}
+                    <strong>Updated:</strong> {new Date(item.lastUpdated).toLocaleDateString()}
                   </div>
                 </div>
               </div>

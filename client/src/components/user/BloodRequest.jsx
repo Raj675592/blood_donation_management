@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../../css/BloodRequest.css";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../pages/Footer";
@@ -8,6 +8,7 @@ function BloodRequest() {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+  const [userName, setUserName] = useState("");
   const [formData, setFormData] = useState({
     patientName: "",
     bloodType: "",
@@ -18,6 +19,40 @@ function BloodRequest() {
     additionalNotes: "",
   });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Get user name from localStorage
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      try {
+        const user = JSON.parse(userData);
+        if (user.name) {
+          setUserName(user.name);
+        }
+      } catch (e) {
+        console.error("Invalid user data");
+      }
+    }
+    // Fallback to token
+    const token = localStorage.getItem("token");
+    if (token && !userName) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        if (payload.name) {
+          setUserName(payload.name);
+        }
+      } catch (e) {
+        console.error("Invalid token");
+      }
+    }
+  }, []);
+
+  const getInitial = () => {
+    if (userName && userName.length > 0) {
+      return userName.charAt(0).toUpperCase();
+    }
+    return "U";
+  };
 
   const submitBloodRequest = async (e) => {
     e.preventDefault();
@@ -69,9 +104,40 @@ function BloodRequest() {
 
   return (
     <>
+      {/* Navbar */}
+      <nav className="blood-request-navbar">
+        <div className="navbar-brand" onClick={() => navigate("/")}>
+          <span className="brand-icon">🩸</span>
+          <span className="brand-text">Blood Bank</span>
+        </div>
+        <div className="navbar-links">
+          <button 
+            className="nav-btn nav-btn-outline"
+            onClick={() => navigate('/dashboard')}
+          >
+            <span className="nav-icon">🏠</span>
+            Dashboard
+          </button>
+          <button 
+            className="nav-btn nav-btn-outline"
+            onClick={() => navigate('/inventory')}
+          >
+            <span className="nav-icon">📦</span>
+            Inventory
+          </button>
+          
+          <div className="nav-profile">
+            <div className="nav-profile-avatar">
+              {getInitial()}
+            </div>
+            {userName && <span className="nav-profile-name">{userName}</span>}
+          </div>
+        </div>
+      </nav>
+
     <div className="blood-request-container">
       <div className="blood-request-header">
-        <h1 className="blood-request-title"> Emergency Blood Request</h1>
+        <h1 className="blood-request-title">🚨 Emergency Blood Request</h1>
         <p className="blood-request-subtitle">
           Submit a blood request to help save a life. All requests are
           prioritized based on urgency.

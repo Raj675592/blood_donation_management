@@ -9,7 +9,7 @@ import BloodRequest from "./components/user/BloodRequest";
 import ScheduleAppointment from "./components/user/ScheduleAppointment";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import { ToastProvider } from "./contexts/ToastContext";
-import ForgotPassword from "./components/auth/Forgot-Password";
+import Inventory from "./components/user/Inventory";
 import ResetPassword from "./components/auth/Reset-Password";
 function App() {
   return (
@@ -18,19 +18,23 @@ function App() {
         <header className="App-header">
           <Router>
             <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<UserDashboard />} />
-            <Route path="/blood-request" element={<BloodRequest />} />
-            <Route path="/request-password-reset" element={<ForgotPassword />} />
-            <Route path="/resetpassword" element={<ResetPassword />} />
-            <Route path="/schedule-appointment" element={<ScheduleAppointment />} />
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          </Routes>
-        </Router>
-      </header>
-    </div>
+              <Route path="/" element={<Home />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/dashboard" element={<UserDashboard />} />
+              <Route path="/blood-request" element={<BloodRequest />} />
+
+              <Route path="/resetpassword" element={<ResetPassword />} />
+              <Route
+                path="/schedule-appointment"
+                element={<ScheduleAppointment />}
+              />
+              <Route path="/admin-dashboard" element={<AdminDashboard />} />
+              <Route path = "/inventory" element={<Inventory/>}/>
+            </Routes>
+          </Router>
+        </header>
+      </div>
     </ToastProvider>
   );
 }

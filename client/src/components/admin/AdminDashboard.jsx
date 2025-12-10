@@ -62,10 +62,35 @@ function AdminDashboard() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/");
-  };
+ const handleLogout = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/auth/logout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+
+    if (response.ok) {
+      // Clear all stored data
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      sessionStorage.clear();
+      
+      // Navigate to home
+      navigate('/');
+    } else {
+      throw new Error('Logout failed');
+    }
+  } catch (error) {
+    console.error('Logout error:', error);
+    
+    localStorage.clear();
+    sessionStorage.clear();
+    navigate('/');
+  }
+};
 
   useEffect(() => {
     dashboardData();
@@ -104,14 +129,14 @@ function AdminDashboard() {
               <div className="dashboard-card">
                 <div className="card-title">Appointments</div>
                 <div className="card-value">
-                  {AdminDashboardData.data?.stats?.totalAppointments || "0"}
+                  {AdminDashboardData.data?.stats?.totalAppointments }
                 </div>
                 <div className="card-subtitle">Scheduled Appointments</div>
               </div>
               <div className="dashboard-card">
                 <div className="card-title">Low Stock Items</div>
                 <div className="card-value">
-                  {AdminDashboardData.data?.stats?.lowStockCount || "0"}
+                  {AdminDashboardData.data?.stats?.lowStockCount }
                 </div>
                 <div className="card-subtitle">Items below 10 units</div>
               </div>

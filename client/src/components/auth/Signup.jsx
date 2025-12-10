@@ -54,6 +54,17 @@ function Signup() {
       setError("Signup failed.");
     }
   };
+  if (localStorage.getItem("token")) {
+    if (
+      JSON.parse(atob(localStorage.getItem("token").split(".")[1])).role ===
+      "admin"
+    ) {
+      window.location.href = "/admin-dashboard";
+    }
+    else{
+      window.location.href = "/dashboard";
+    }
+  }
   return (
     <div className="signup-container">
       {/* right form Area */}

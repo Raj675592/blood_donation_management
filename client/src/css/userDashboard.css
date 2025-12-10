@@ -7,10 +7,8 @@
 
 .dashboard-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    font-family: 'Arial', sans-serif;
-    scroll-margin-bottom: 10px;
-    
+    background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+    font-family: 'Segoe UI', 'Arial', sans-serif;
 }
 
 /* Loading Spinner */
@@ -21,21 +19,28 @@
     align-items: center;
     height: 100vh;
     text-align: center;
+    background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
 }
 
 .spinner {
-    width: 50px;
-    height: 50px;
-    border: 4px solid #f3f4f6;
-    border-top: 4px solid #dc2626;
+    width: 60px;
+    height: 60px;
+    border: 5px solid #fee2e2;
+    border-top: 5px solid #dc2626;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 1rem;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 1.5rem;
 }
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.loading-spinner p {
+    color: #64748b;
+    font-size: 1.1rem;
+    font-weight: 500;
 }
 
 /* Error Message */
@@ -51,25 +56,35 @@
 
 .error-message button {
     margin-top: 1rem;
-    padding: 0.75rem 1.5rem;
-    background: #dc2626;
+    padding: 0.75rem 2rem;
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.error-message button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
 }
 
 /* Header */
 .dashboard-header {
-    background: white;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem 0;
-    margin-bottom: 2rem;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 1.25rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 3px solid #dc2626;
 }
 
 .header-content {
-    max-width: 1200px;
+    max-width: 1300px;
     margin: 0 auto;
     padding: 0 2rem;
     display: flex;
@@ -78,35 +93,37 @@
 }
 
 .dashboard-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #1f2937;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #1e293b;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.75rem;
 }
 
 .logout-btn {
-    background: linear-gradient(135deg, #dc2626, #b91c1c);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
+    background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+    color: white !important;
+    border: none !important;
+    padding: 0.75rem 1.75rem !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
     cursor: pointer;
     transition: all 0.3s ease;
+    font-size: 0.95rem !important;
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
 }
 
 .logout-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
 }
 
 /* Main Dashboard */
 .dashboard-main {
-    max-width: 1200px;
+    max-width: 1300px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 2rem;
     display: grid;
     gap: 2rem;
     grid-template-columns: 1fr;
@@ -114,123 +131,172 @@
 
 /* Profile Card */
 .profile-card {
-    background: white;
-    border-radius: 16px;
+    background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%);
+    border-radius: 20px;
     padding: 2rem;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    border-left: 5px solid #dc2626;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    border-left: 6px solid #dc2626;
+    transition: all 0.3s ease;
+}
+
+.profile-card:hover {
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
 }
 
 .profile-header {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
 .profile-avatar {
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    width: 90px;
+    height: 90px;
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
-    font-weight: 700;
+    font-size: 2.25rem;
+    font-weight: 800;
     color: white;
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.35);
+    border: 4px solid #fee2e2;
 }
 
 .profile-info h2 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 0.5rem;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 0.35rem;
+    letter-spacing: -0.5px;
 }
 
 .profile-email {
-    color: #6b7280;
+    color: #64748b;
     font-size: 1rem;
     margin-bottom: 1rem;
 }
 
 .profile-details {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
     flex-wrap: wrap;
+    margin-top: 0.5rem;
 }
 
-.blood-type, .phone, .last-login {
+.blood-type, .phone, .last-login, .date-of-birth, .gender {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-weight: 600;
-    color: #374151;
+    color: #475569;
+    background: #f1f5f9;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-size: 0.9rem;
+}
+
+.blood-type {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    color: #dc2626;
 }
 
 .last-login {
-    color: #6b7280;
-    font-size: 0.9rem;
-    font-style: italic;
+    font-style: normal;
+    font-weight: 500;
 }
 
 /* Stats Grid */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
-    margin-bottom: 1rem;
 }
 
 .stat-card {
-    background: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+    border-radius: 16px;
+    padding: 1.75rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.25rem;
     transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
 }
 
 .stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
 }
 
-.stat-card.donations {
-    border-left: 4px solid #dc2626;
+.stat-card.donations::before {
+    background: linear-gradient(180deg, #dc2626, #ef4444);
 }
 
-.stat-card.lives-saved {
-    border-left: 4px solid #059669;
+.stat-card.appointments::before {
+    background: linear-gradient(180deg, #3b82f6, #60a5fa);
 }
 
-.stat-card.next-eligible {
-    border-left: 4px solid #d97706;
+.stat-card.blood-requests::before {
+    background: linear-gradient(180deg, #ec4899, #f472b6);
 }
 
-.stat-card.points {
-    border-left: 4px solid #7c3aed;
+.stat-card.next-appointment::before {
+    background: linear-gradient(180deg, #f59e0b, #fbbf24);
 }
 
 .stat-icon {
-    font-size: 2.5rem;
+    font-size: 2.75rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 70px;
+    height: 70px;
+    border-radius: 16px;
+    background: #f8fafc;
+}
+
+.stat-card.donations .stat-icon {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+}
+
+.stat-card.appointments .stat-icon {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+}
+
+.stat-card.blood-requests .stat-icon {
+    background: linear-gradient(135deg, #fce7f3, #fbcfe8);
+}
+
+.stat-card.next-appointment .stat-icon {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
 }
 
 .stat-info h3 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #1f2937;
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #1e293b;
     margin-bottom: 0.25rem;
+    line-height: 1;
 }
 
 .stat-info p {
-    color: #6b7280;
+    color: #64748b;
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 /* Activity Section */
@@ -238,272 +304,330 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
-    margin-bottom: 1rem;
 }
 
-.recent-donations, .upcoming-appointments {
-    background: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+.recent-appointments, .recent-blood-requests {
+    background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+    border-radius: 20px;
+    padding: 1.75rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
 }
 
-.recent-donations h3, .upcoming-appointments h3 {
-    font-size: 1.3rem;
+.recent-appointments h3, .recent-blood-requests h3 {
+    font-size: 1.25rem;
     font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 1rem;
+    color: #1e293b;
+    margin-bottom: 1.25rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #f1f5f9;
 }
 
 .donations-list, .appointments-list, .blood-requests-list {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.85rem;
 }
 
 .donation-item, .appointment-item, .blood-request-item {
-    background: #f9fafb;
-    border-radius: 8px;
-    padding: 1rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 12px;
+    padding: 1.15rem;
     display: grid;
     grid-template-columns: auto 1fr auto;
-    gap: 1rem;
+    gap: 1.25rem;
     align-items: center;
     transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
 }
 
 .donation-item:hover, .appointment-item:hover, .blood-request-item:hover {
-    background: #f3f4f6;
-    transform: translateX(5px);
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    transform: translateX(8px);
+    border-color: #fca5a5;
 }
 
-.donation-date, .appointment-date {
-    font-weight: 600;
-    color: #374151;
+.donation-date, .appointment-date, .request-date {
+    font-weight: 700;
+    color: #1e293b;
     font-size: 0.9rem;
+    background: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .donation-details, .appointment-time, .appointment-location {
-    color: #6b7280;
-    font-size: 0.85rem;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.appointment-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.appointment-time {
+    font-weight: 600;
+    color: #475569;
 }
 
 .donation-type {
-    font-weight: 600;
+    font-weight: 700;
     color: #dc2626;
 }
 
-.donation-status, .appointment-status {
+.donation-status, .appointment-status, .request-status {
     font-size: 0.8rem;
-    font-weight: 600;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
+    font-weight: 700;
+    padding: 0.4rem 1rem;
+    border-radius: 25px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
 }
 
-.donation-status.completed {
-    background: #d1fae5;
-    color: #059669;
+.donation-status.completed, .appointment-status.completed {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    color: #047857;
 }
 
 .appointment-status.pending {
-    background: #fef3c7;
-    color: #d97706;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #b45309;
 }
 
 .appointment-status.scheduled {
-    background: #dbeafe;
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
     color: #1d4ed8;
 }
 
 .appointment-status.cancelled {
-    background: #fee2e2;
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
     color: #dc2626;
 }
 
 /* Blood Request Items */
-.recent-blood-requests h3 {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.request-date {
-    font-weight: 600;
-    color: #374151;
-    font-size: 0.9rem;
-}
-
 .request-details {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.3rem;
 }
 
 .patient-name {
-    font-weight: 600;
-    color: #1f2937;
+    font-weight: 700;
+    color: #1e293b;
+    font-size: 0.95rem;
 }
 
 .blood-type-needed, .units-needed, .urgency-level {
     font-size: 0.8rem;
-    color: #6b7280;
+    color: #64748b;
 }
 
-.request-status {
-    font-size: 0.8rem;
+.urgency-level {
     font-weight: 600;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
+    color: #dc2626;
 }
 
 .request-status.fulfilled {
-    background: #d1fae5;
-    color: #059669;
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    color: #047857;
 }
 
 .request-status.pending {
-    background: #fef3c7;
-    color: #d97706;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #b45309;
 }
 
-.request-status.cancelled {
-    background: #fee2e2;
+.request-status.cancelled, .request-status.rejected {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
     color: #dc2626;
+}
+
+.request-status.accepted {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: #1d4ed8;
+}
+
+/* No Data State */
+.no-data {
+    text-align: center;
+    color: #94a3b8;
+    font-style: italic;
+    padding: 2.5rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 2px dashed #e2e8f0;
 }
 
 /* Upcoming Appointment Card */
 .upcoming-appointment-card {
-    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
     color: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 15px 40px rgba(220, 38, 38, 0.35);
+    position: relative;
+    overflow: hidden;
+}
+
+.upcoming-appointment-card::before {
+    content: '📅';
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    font-size: 120px;
+    opacity: 0.1;
 }
 
 .upcoming-appointment-card h3 {
-    font-size: 1.3rem;
+    font-size: 1.35rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
 }
 
 .upcoming-appointment-card .appointment-details {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.6rem;
 }
 
 .upcoming-appointment-card p {
     margin: 0;
-    font-size: 1rem;
+    font-size: 1.05rem;
 }
 
 .upcoming-appointment-card strong {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.no-data {
-    text-align: center;
-    color: #9ca3af;
-    font-style: italic;
-    padding: 2rem;
+    color: rgba(255, 255, 255, 0.85);
 }
 
 /* Quick Actions */
 .quick-actions {
-    background: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-    margin-bottom:10px;
+    background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+    margin-bottom: 1.5rem;
 }
 
 .quick-actions h3 {
-    font-size: 1.3rem;
+    font-size: 1.35rem;
     font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 1rem;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #f1f5f9;
 }
 
 .actions-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
 }
 
 .action-btn {
-    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 1rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    font-weight: 600;
-    color: #374151;
+    gap: 0.85rem;
+    font-weight: 700;
+    color: #475569;
+    font-size: 1rem;
 }
 
 .action-btn:hover {
-    background: linear-gradient(135deg, #dc2626, #b91c1c);
-    color: white;
-    border-color: #dc2626;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
 }
 
 .btn-icon {
-    font-size: 1.2rem;
+    font-size: 1.35rem;
+}
+
+.action-btn.schedule {
+    border-color: #86efac;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    color: #166534;
 }
 
 .action-btn.schedule:hover {
-    background: linear-gradient(135deg, #059669, #047857);
-    border-color: #059669;
-    box-shadow: 0 8px 20px rgba(5, 150, 105, 0.3);
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
+    border-color: #22c55e;
+    box-shadow: 0 12px 30px rgba(34, 197, 94, 0.35);
+}
+
+.action-btn.request {
+    border-color: #fca5a5;
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    color: #991b1b;
 }
 
 .action-btn.request:hover {
-    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    color: white;
     border-color: #dc2626;
+    box-shadow: 0 12px 30px rgba(220, 38, 38, 0.35);
 }
 
-.action-btn.profile:hover {
-    background: linear-gradient(135deg, #7c3aed, #6d28d9);
-    border-color: #7c3aed;
-    box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
+.action-btn.edit-profile {
+    border-color: #c4b5fd;
+    background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+    color: #5b21b6;
 }
 
-.action-btn.history:hover {
-    background: linear-gradient(135deg, #d97706, #b45309);
-    border-color: #d97706;
-    box-shadow: 0 8px 20px rgba(217, 119, 6, 0.3);
+.action-btn.edit-profile:hover {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+    border-color: #8b5cf6;
+    box-shadow: 0 12px 30px rgba(139, 92, 246, 0.35);
+}
+
+.action-btn.inventory {
+    border-color: #93c5fd;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    color: #1e40af;
+}
+
+.action-btn.inventory:hover {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border-color: #3b82f6;
+    box-shadow: 0 12px 30px rgba(59, 130, 246, 0.35);
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 1024px) {
     .dashboard-main {
-        padding: 0 1rem;
+        padding: 1.5rem;
     }
     
     .activity-section {
         grid-template-columns: 1fr;
     }
     
-    .stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    .actions-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
@@ -515,7 +639,7 @@
     }
     
     .dashboard-title {
-        font-size: 1.5rem;
+        font-size: 1.35rem;
     }
     
     .profile-header {
@@ -528,7 +652,21 @@
     }
     
     .stats-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .stat-card {
+        padding: 1.25rem;
+    }
+    
+    .stat-icon {
+        width: 55px;
+        height: 55px;
+        font-size: 2rem;
+    }
+    
+    .stat-info h3 {
+        font-size: 1.75rem;
     }
     
     .actions-grid {
@@ -538,6 +676,7 @@
     .donation-item, .appointment-item, .blood-request-item {
         grid-template-columns: 1fr;
         text-align: center;
+        gap: 0.75rem;
     }
     
     .request-details {
@@ -551,17 +690,41 @@
     }
     
     .dashboard-main {
-        padding: 0 0.5rem;
-        gap: 1rem;
+        padding: 1rem;
+        gap: 1.25rem;
     }
     
-    .profile-card, .recent-donations, .upcoming-appointments, .quick-actions {
-        padding: 1rem;
-        margin: 0 0.5rem;
+    .profile-card, .recent-appointments, .recent-blood-requests, .quick-actions {
+        padding: 1.25rem;
+        border-radius: 16px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
     
     .stat-card {
         padding: 1rem;
+    }
+    
+    .profile-avatar {
+        width: 70px;
+        height: 70px;
+        font-size: 1.75rem;
+    }
+    
+    .profile-info h2 {
+        font-size: 1.35rem;
+    }
+    
+    .profile-details {
+        gap: 0.75rem;
+    }
+    
+    .blood-type, .phone, .last-login, .date-of-birth, .gender {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.75rem;
     }
 }
 
@@ -743,5 +906,232 @@
     .cancel-btn,
     .update-btn {
         width: 100%;
+    }
+}
+
+/* Inventory Modal Styles */
+.inventory-modal-content {
+    background: white;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 85vh;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
+    position: relative;
+}
+
+.inventory-modal-body {
+    padding: 1.5rem;
+    max-height: calc(85vh - 80px);
+    overflow-y: auto;
+}
+
+.inventory-loading,
+.no-inventory {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: #64748b;
+}
+
+.inventory-loading .spinner {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 1rem;
+}
+
+.inventory-modal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.25rem;
+}
+
+.inventory-modal-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.inventory-modal-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(220, 38, 38, 0.15);
+}
+
+.inventory-card-header {
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.blood-type-badge {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.stock-badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.stock-badge.good {
+    background: #d1fae5;
+    color: #047857;
+}
+
+.stock-badge.low {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.stock-badge.critical {
+    background: #fee2e2;
+    color: #dc2626;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.inventory-card-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.units-circle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 90px;
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    border-radius: 50%;
+    border: 3px solid #fca5a5;
+}
+
+.units-num {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #dc2626;
+    line-height: 1;
+}
+
+.units-text {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.inventory-details {
+    width: 100%;
+    text-align: center;
+}
+
+.inventory-details p {
+    font-size: 0.85rem;
+    color: #475569;
+    margin: 0.35rem 0;
+}
+
+.inventory-details strong {
+    color: #1e293b;
+}
+
+.request-blood-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+}
+
+.request-blood-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(34, 197, 94, 0.35);
+}
+
+.inventory-modal-footer {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: center;
+    background: #f8fafc;
+}
+
+.inventory-cancel-btn {
+    padding: 0.85rem 2.5rem;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    color: #475569;
+    border: 2px solid #cbd5e1;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.inventory-cancel-btn:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    color: white;
+    border-color: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
+}
+
+/* Responsive Inventory Modal */
+@media (max-width: 768px) {
+    .inventory-modal-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    .inventory-modal-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .inventory-modal-body {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .inventory-modal-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .units-circle {
+        width: 75px;
+        height: 75px;
+    }
+    
+    .units-num {
+        font-size: 1.5rem;
     }
 }

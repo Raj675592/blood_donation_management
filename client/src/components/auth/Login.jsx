@@ -40,6 +40,10 @@ function Login() {
         if (data.token) {
           localStorage.setItem("token", data.token);
         }
+        // Store user data if provided
+        if (data.user) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+        }
 
         if (data.user.role === "user") {
           navigate("/dashboard");
@@ -92,7 +96,17 @@ function Login() {
     },
     [email, message, showToast]
   );
-
+if (localStorage.getItem("token")) {
+    if (
+      JSON.parse(atob(localStorage.getItem("token").split(".")[1])).role ===
+      "admin"
+    ) {
+      window.location.href = "/admin-dashboard";
+    }
+    else{
+      window.location.href = "/dashboard";
+    }
+  }
   return (
     <div className="login-container">
       {/* right form Area */}

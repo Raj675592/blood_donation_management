@@ -1,23 +1,20 @@
 const User = require("../models/user");
 const Appointment = require("../models/Appointment");
 const BloodRequest = require("../models/BloodRequest");
+const BloodInventory = require("../models/BloodInventory"); // Ensure this model is defined correctly
 
 const getUserDashboard = async (req, res) => {
   try {
-  
-
     // Check if user exists
     const user = await User.findById(req.user.id).select("-password");
 
     if (!user) {
-    
       return res.status(404).json({
         success: false,
         message: "User not found",
       });
     }
 
-   
     const appointmentStats = await Appointment.aggregate([
       { $match: { userId: user._id } },
       {
@@ -28,13 +25,12 @@ const getUserDashboard = async (req, res) => {
       },
     ]);
 
-
     // Get all appointments
-   
+
     const recentAppointments = await Appointment.find({ userId: user._id })
       .sort({ appointmentDate: -1 })
       .select("appointmentDate timeSlot location status");
-  
+
     const bloodRequestStats = await BloodRequest.aggregate([
       { $match: { userId: user._id } },
       {
@@ -44,21 +40,18 @@ const getUserDashboard = async (req, res) => {
         },
       },
     ]);
-   
 
     // Get all blood requests
-   
+
     const recentBloodRequests = await BloodRequest.find({ userId: user._id })
       .sort({ createdAt: -1 })
       .select(
         "patientName bloodType unitsNeeded urgencyLevel status hospitalName createdAt"
       );
-   
 
     // Calculate total donations (completed appointments) - with safety check
     const totalDonations =
       appointmentStats.find((stat) => stat._id === "completed")?.count || 0;
-
 
     // Calculate next upcoming appointment
     const upcomingAppointment = await Appointment.findOne({
@@ -120,8 +113,6 @@ const getUserDashboard = async (req, res) => {
 };
 const bloodRequest = async (req, res) => {
   try {
-    
-
     const {
       patientName,
       bloodType,
@@ -188,16 +179,8 @@ const bloodRequest = async (req, res) => {
 
 const scheduleAppointment = async (req, res) => {
   try {
-
-
-    const {
-      name,
-      appointmentDate,
-      timeSlot,
-      location,
-      bloodType,
-      notes,
-    } = req.body;
+    const { name, appointmentDate, timeSlot, location, bloodType, notes } =
+      req.body;
     if (!name || !appointmentDate || !timeSlot || !location || !bloodType) {
       return res.status(400).json({
         success: false,
@@ -210,7 +193,7 @@ const scheduleAppointment = async (req, res) => {
     const appointmentDateObj = new Date(appointmentDate);
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Reset time to start of day for accurate comparison
-    
+
     if (appointmentDateObj < today) {
       return res.status(400).json({
         success: false,
@@ -219,7 +202,7 @@ const scheduleAppointment = async (req, res) => {
     }
 
     // Validate blood type
-    const validBloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+    const validBloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
     if (!validBloodTypes.includes(bloodType)) {
       return res.status(400).json({
         success: false,
@@ -241,13 +224,14 @@ const scheduleAppointment = async (req, res) => {
       userId: req.user.id,
       appointmentDate,
       timeSlot,
-      status: { $in: ['scheduled', 'confirmed'] }
+      status: { $in: ["scheduled", "confirmed"] },
     });
 
     if (existingAppointment) {
       return res.status(409).json({
         success: false,
-        message: "You already have an appointment scheduled for this date and time",
+        message:
+          "You already have an appointment scheduled for this date and time",
       });
     }
 
@@ -258,13 +242,11 @@ const scheduleAppointment = async (req, res) => {
       appointmentDate,
       timeSlot,
       location,
-      status: 'scheduled', // Default status for new appointments
+      status: "scheduled", // Default status for new appointments
       bloodType,
       notes: notes || "",
       DOB: user.dateOfBirth, // Get from authenticated user data
     });
-
-   
 
     res.status(201).json({
       success: true,
@@ -280,8 +262,28 @@ const scheduleAppointment = async (req, res) => {
     });
   }
 };
+
+const getInventoryOverview = async (req, res) => {
+  try {
+    // Fetch blood inventory overview
+
+    const bloodInventory = await BloodInventory.find();
+    res.status(200).json({
+      success: true,
+      bloodInventory,
+    });
+  } catch (error) {
+    console.error("Get inventory overview error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 module.exports = {
   getUserDashboard,
   bloodRequest,
   scheduleAppointment,
+  getInventoryOverview,
 };
