@@ -19,7 +19,7 @@ const PORT = process.env.PORT;
 const MONGO_URI = process.env.MONGO_URI;
 
 // CORS configuration - only allow origins from environment variables
-const rawClientUrls = "localhost:3000" || process.env.CLIENT_URL;
+const rawClientUrls = "localhost:3000" || "https://blood-donation-frontend-kvtv38vfq-raj675592s-projects.vercel.app"|| process.env.CLIENT_URL ;
 const allowedOrigins = rawClientUrls
   .split(",")
   .map((s) => s.trim())
