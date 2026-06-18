@@ -1,20 +1,46 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../css/Login.css";
 import { useToast } from "../../contexts/ToastContext";
-import "../../css/Forgot-Password.css";
+import "../../css/Login.css"; // We consolidate all styles here
+
 function Login() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  
   const [forgotModal, setForgotModal] = useState(false);
+  const [email, setEmail] = useState("");
+  const [message] = useState(
+    "If an account with that email exists, a password reset link has been sent."
+  );
+
+  // Safely handle existing sessions without blocking the render
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        if (payload.role === "admin") {
+          navigate("/admin-dashboard");
+        } else {
+          navigate("/dashboard");
+        }
+      } catch (e) {
+        console.error("Invalid token format");
+      }
+    }
+  }, [navigate]);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -30,17 +56,14 @@ function Login() {
         body: JSON.stringify(formData),
       });
       const data = await response.json();
+      
       if (response.ok) {
         setSuccess("Login successful!");
-        setFormData({
-          email: "",
-          password: "",
-        });
-        // Store token if provided
+        setFormData({ email: "", password: "" });
+        
         if (data.token) {
           localStorage.setItem("token", data.token);
         }
-        // Store user data if provided
         if (data.user) {
           localStorage.setItem("user", JSON.stringify(data.user));
         }
@@ -55,15 +78,9 @@ function Login() {
         setError(data.message || "Login failed.");
       }
     } catch (error) {
-      setError("Login failed.");
+      setError("Login failed. Please check your connection.");
     }
   };
-
-  const [email, setEmail] = useState("");
-  const [message] = useState(
-    "If an account with that email exists, a password reset link has been sent."
-  );
-  const { showToast } = useToast();
 
   const handleSubmitPasswordReset = useCallback(
     async (e) => {
@@ -82,11 +99,11 @@ function Login() {
           }
         );
         const data = await response.json();
-        console.log(data);
 
         if (response.ok) {
           showToast(data.message || message, "success");
           setEmail("");
+          setForgotModal(false); // Auto-close modal on success
         } else {
           showToast(data.message || message, "info");
         }
@@ -96,169 +113,166 @@ function Login() {
     },
     [email, message, showToast]
   );
-if (localStorage.getItem("token")) {
-    if (
-      JSON.parse(atob(localStorage.getItem("token").split(".")[1])).role ===
-      "admin"
-    ) {
-      window.location.href = "/admin-dashboard";
-    }
-    else{
-      window.location.href = "/dashboard";
-    }
-  }
+
   return (
-    <div className="login-container">
-      {/* right form Area */}
-      <div className="login-form-container">
-        <form onSubmit={handleSubmit} className="login-form">
-          <h2 className="form-title">Sign In</h2>
-
-          <div className="welcome-message">
-            <h3>Welcome to Blood Bank</h3>
-            <p>Login to continue your life-saving journey</p>
+    <div className="pro-login-wrapper">
+      
+      {/* LEFT CONTENT AREA: Brand & Features */}
+      <div className="pro-login-left">
+        <div className="left-content-inner">
+          <div className="brand-logo">
+            {/* Simple Blood Drop SVG */}
+            <svg viewBox="0 0 24 24" fill="currentColor" className="logo-icon">
+              <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+            </svg>
+            <h2>Blood Bank</h2>
           </div>
-
-          {error && (
-            <p
-              style={{
-                color: "#dc2626",
-                background: "#fef2f2",
-                padding: "12px",
-                borderRadius: "6px",
-                textAlign: "center",
-                fontWeight: "500",
-              }}
-            >
-              {error}
-            </p>
-          )}
-          {success && (
-            <p
-              style={{
-                color: "#059669",
-                background: "#ecfdf5",
-                padding: "12px",
-                borderRadius: "6px",
-                textAlign: "center",
-                fontWeight: "500",
-              }}
-            >
-              {success}
-            </p>
-          )}
-
-          <div className="form-group">
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter your email address"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <input
-              type="password"
-              name="password"
-              placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <button type="submit">Sign In to Blood Bank</button>
-
-          <div className="login-link">
-            New to Blood Bank?{" "}
-            <a href="/signup" style={{ color: "green" }}>
-              Create Account
-            </a>
-          </div>
-          <div className="login-link">
-            <button
-              onClick={ () => setForgotModal(true)}
-              style={{
-                background: "none",
-                border: "none",
-                
-                color: "#ff1606ff",
-                cursor: "pointer",
-                padding: 0,
-                fontSize: "1rem",
-                textDecoration: "none",
-              }}
-            >
-              Forgot Password?
-            </button>
-          </div>
-        </form>
+          
+          <h1 className="login-title">Welcome Back.</h1>
+          <p className="login-subtitle">
+            Continue your journey of saving lives through blood donation. Your
+            account helps us connect you with those in immediate need.
+          </p>
+          
+          <ul className="login-features">
+            {[
+              "Access your donation history",
+              "Schedule new appointments",
+              "Track your impact on lives saved",
+              "Connect with donation centers",
+              "Receive important health updates",
+            ].map((feature, idx) => (
+              <li key={idx}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="check-icon">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                {feature}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-      {forgotModal && (
-        <div className="modal-overlay">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h3>Update Password</h3>
-                  <button
-                    onClick={() => setForgotModal(false)}
-                    className="modal-close"
-                  >
-                    ×
-                  </button>
-                </div>
-                {error && <div className="error-message">{error}</div>}
-                <form
-                  onSubmit={handleSubmitPasswordReset}
-                  className="update-form"
-                >
-                  <label htmlFor="email">Enter your email address:</label>
+
+      {/* RIGHT FORM AREA: Login Form */}
+      <div className="pro-login-right">
+        <div className="login-form-container">
+          <div className="welcome-message">
+            <h2>Sign In</h2>
+            <p>Enter your details to access your dashboard</p>
+          </div>
+
+          {/* Alert Messages */}
+          {error && <div className="alert alert-error">{error}</div>}
+          {success && <div className="alert alert-success">{success}</div>}
+
+          <form onSubmit={handleSubmit} className="pro-login-form">
+            <div className="form-group">
+              <label htmlFor="email">Email Address</label>
+              <div className="input-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="input-icon">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
                 <input
-                    type="email"
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="name@example.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
                 />
-                
-                 
-                  <div className="modal-actions">
-                    <button
-                      type="button"
-                      onClick={() => setForgotModal(false)}
-                      className="cancel-btn"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="update-btn"
-                     
-                    >
-                      Request Password Reset
-                    </button>
-                  </div>
-                </form>
               </div>
             </div>
-      )}
-      {/* left content Area */}
-      <div className="login-left-content">
-        <h1 className="login-title">Welcome Back</h1>
-        <p className="login-subtitle">
-          Continue your journey of saving lives through blood donation. Your
-          account helps us connect you with those in need.
-        </p>
-        <ul className="login-features">
-          <li>Access your donation history</li>
-          <li>Schedule new appointments</li>
-          <li>Track your impact on lives saved</li>
-          <li>Connect with donation centers</li>
-          <li>Receive important health updates</li>
-        </ul>
+
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <div className="input-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="input-icon">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-options">
+              <button
+                type="button"
+                className="btn-forgot-password"
+                onClick={() => setForgotModal(true)}
+              >
+                Forgot Password?
+              </button>
+            </div>
+
+            <button type="submit" className="btn-primary">
+              Sign In
+            </button>
+
+            <p className="register-prompt">
+              New to Blood Bank? <a href="/signup">Create an Account</a>
+            </p>
+          </form>
+        </div>
       </div>
+
+      {/* MODAL: Forgot Password */}
+      {forgotModal && (
+        <div className="pro-modal-overlay">
+          <div className="pro-modal-content">
+            <div className="modal-header">
+              <h3>Reset Password</h3>
+              <button
+                onClick={() => setForgotModal(false)}
+                className="modal-close-btn"
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
+            
+            <p className="modal-description">
+              Enter the email associated with your account, and we'll send you a link to reset your password.
+            </p>
+
+            <form onSubmit={handleSubmitPasswordReset} className="modal-form">
+              <div className="form-group">
+                <label htmlFor="reset-email">Email Address</label>
+                <input
+                  type="email"
+                  id="reset-email"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  onClick={() => setForgotModal(false)}
+                  className="btn-secondary"
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn-primary">
+                  Send Reset Link
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

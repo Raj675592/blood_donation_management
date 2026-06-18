@@ -17,7 +17,7 @@ const staticRouter = require("./routes/staticRouter");
 const app = express();
 const PORT = process.env.PORT;
 const MONGO_URI = process.env.MONGO_URI;
-
+console.log("MONGO_URI:", MONGO_URI ? "Defined" : "Not Defined");
 // CORS configuration - only allow origins from environment variables
 const rawClientUrls = "localhost:3000" || "https://blood-donation-frontend-kvtv38vfq-raj675592s-projects.vercel.app"|| process.env.CLIENT_URL ;
 const allowedOrigins = rawClientUrls
@@ -129,6 +129,8 @@ const startServer = async () => {
     });
   } catch (error) {
     console.error("❌ Failed to start server:", error.message);
+    console.error("Stack trace:", error.stack); // Log stack trace for debugging
+    
     process.exit(1);
   }
 };
