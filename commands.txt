@@ -1,5 +1,5 @@
 frontend
-cd client 
+cd blood_donation_management/client 
 npm start
 
 backend : open another terminal

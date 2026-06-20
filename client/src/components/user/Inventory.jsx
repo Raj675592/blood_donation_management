@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { useToast } from "../../contexts/ToastContext";
+// import { useToast } from "../../contexts/ToastContext";
 import "../../css/Inventory.css";
 import Footer from "../../pages/Footer";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-// Helper functions for stock status
+// ─── Helper functions (unchanged) ───────────────────────────────────────────
 const getStockStatus = (units) => {
   if (units <= 5) return "critical";
   if (units <= 15) return "low";
@@ -17,19 +17,19 @@ const getStockLabel = (units) => {
   return "In Stock";
 };
 
+// ─── Component ───────────────────────────────────────────────────────────────
 function Inventory() {
   const [inventory, setInventory] = useState([]);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { showToast } = useToast();
+  const [error, setError]         = useState("");
+  const [loading, setLoading]     = useState(false);
+  // const { showToast } = useToast();
   const navigate = useNavigate();
 
-  const REACT_APP_URL =
-    process.env.REACT_APP_API_URL || "http://localhost:8001";
+  const REACT_APP_URL = process.env.REACT_APP_API_URL || "http://localhost:8001";
 
+  // ── Data fetch (unchanged) ──────────────────────────────────────────────
   const getInventory = async () => {
     setError("");
-
     try {
       setLoading(true);
       const response = await fetch(
@@ -60,115 +60,188 @@ function Inventory() {
     getInventory();
   }, []);
 
+  // ── Derived stats ────────────────────────────────────────────────────────
+  const totalUnits   = inventory.reduce((s, i) => s + (i.unitsAvailable || 0), 0);
+  const criticalCount = inventory.filter(i => getStockStatus(i.unitsAvailable) === "critical").length;
+  const typesInStock  = inventory.filter(i => getStockStatus(i.unitsAvailable) !== "critical").length;
+
   return (
-    <>
-      {/* Navbar */}
-      <nav className="inventory-navbar">
-        <div className="navbar-brand">
-          <span className="brand-icon">🩸</span>
-          <span className="brand-text">Blood Bank</span>
+    <div className="inv-root">
+
+      {/* ── Navbar ──────────────────────────────────────────────────────── */}
+      <nav className="inv-nav">
+        <div className="inv-nav__brand">
+          <span className="inv-nav__drop">🩸</span>
+          <span className="inv-nav__title">BloodBank</span>
         </div>
-        <div className="navbar-links">
-          <button 
-            className="nav-btn nav-btn-primary"
-            onClick={() => navigate('/dashboard')}
+
+        <div className="inv-nav__actions">
+          <button
+            className="inv-btn inv-btn--ghost"
+            onClick={() => navigate("/dashboard")}
           >
-            <span className="nav-icon">🏠</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             Dashboard
           </button>
-          <button 
-            className="nav-btn nav-btn-secondary"
-            onClick={() => navigate('/blood-request')}
+
+          <button
+            className="inv-btn inv-btn--outline"
+            onClick={() => navigate("/blood-request")}
           >
-            <span className="nav-icon">💉</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             Request Blood
           </button>
-         
-          <button 
-            className="nav-btn nav-btn-refresh"
+
+          <button
+            className="inv-btn inv-btn--accent"
             onClick={getInventory}
             disabled={loading}
           >
-            <span className="nav-icon">{loading ? '⏳' : '🔄'}</span>
-            {loading ? 'Refreshing...' : 'Refresh'}
+            <svg
+              className={loading ? "inv-spin" : ""}
+              xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+            >
+              <path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+            </svg>
+            {loading ? "Refreshing…" : "Refresh"}
           </button>
         </div>
       </nav>
 
-      <div className="inventory-container">
-        <div className="inventory-header">
-          <h2>Inventory Overview</h2>
-          <p className="inventory-subtitle">View available blood units across all blood types</p>
-        </div>
-        {loading ? (
-          <p>Loading inventory data...</p>
-        ) : error ? (
-          <p>{error}</p>
-        ) : (
-          <div className="inventory-data">
-            {/* Render inventory data here */}
-            <div className="inventory-grid">
-              {inventory.map((item) => (
-                <div key={item._id} className="inventory-card">
-                  <div className="card-header">
-                    <h4 className="blood-type-title">{item.bloodType}</h4>
-                    <span
-                      className={`stock-status ${getStockStatus(
-                        item.unitsAvailable
-                      )}`}
-                    >
-                      {getStockLabel(item.unitsAvailable)}
-                    </span>
-                  </div>
+      {/* ── Hero ────────────────────────────────────────────────────────── */}
+      <header className="inv-hero">
+        <span className="inv-hero__eyebrow">Live Stock Dashboard</span>
+        <h1 className="inv-hero__title">Blood Inventory</h1>
+        <p className="inv-hero__sub">
+          Real-time availability across all blood types
+        </p>
 
-                  <div className="card-body">
-                    <div className="units-display">
-                      <span className="units-number">
-                        {item.unitsAvailable}
-                      </span>
-                      <span className="units-label">Units</span>
-                    </div>
-
-                    <div className="item-details">
-                      {item.expiryDate && (
-                        <div className="detail-item">
-                          <strong>Expires:</strong>{" "}
-                          <span>{new Date(item.expiryDate).toLocaleDateString()}</span>
-                        </div>
-                      )}
-                      {item.location && (
-                        <div className="detail-item">
-                          <strong>Location:</strong> <span>{item.location}</span>
-                        </div>
-                      )}
-                      {item.lastUpdated && (
-                        <div className="detail-item">
-                          <strong>Updated:</strong>{" "}
-                          <span>{new Date(item.lastUpdated).toLocaleDateString()}</span>
-                        </div>
-                      )}
-                      <button
-                        onClick={() => navigate('/blood-request')}
-                        className="btn btn-sm btn-danger"
-                        style={{ marginTop: "10px", backgroundColor: "green" }}>
-                        Request Blood
-                      </button>
-                    </div>
-                    
-                  </div>
-                </div>
-              ))}
+        {/* Summary stats — only when data is loaded */}
+        {!loading && !error && inventory.length > 0 && (
+          <div className="inv-stats">
+            <div className="inv-stat">
+              <span className="inv-stat__num">{totalUnits}</span>
+              <span className="inv-stat__label">Total Units</span>
+            </div>
+            <div className="inv-stat__divider" />
+            <div className="inv-stat">
+              <span className="inv-stat__num inv-stat__num--teal">{typesInStock}</span>
+              <span className="inv-stat__label">Types Available</span>
+            </div>
+            <div className="inv-stat__divider" />
+            <div className="inv-stat">
+              <span className="inv-stat__num inv-stat__num--red">{criticalCount}</span>
+              <span className="inv-stat__label">Critical Alerts</span>
             </div>
           </div>
         )}
-        {inventory.length === 0 && !loading && (
-          <div className="empty-state">
-            <p>No available inventory items found. </p>
+      </header>
+
+      {/* ── Main Content ────────────────────────────────────────────────── */}
+      <main className="inv-main">
+
+        {/* Loading */}
+        {loading && (
+          <div className="inv-feedback">
+            <div className="inv-spinner" />
+            <p className="inv-feedback__text">Fetching inventory data…</p>
           </div>
         )}
-      </div>
+
+        {/* Error */}
+        {!loading && error && (
+          <div className="inv-feedback inv-feedback--error">
+            <span className="inv-feedback__icon">⚠️</span>
+            <p className="inv-feedback__text">{error}</p>
+            <button className="inv-btn inv-btn--accent" onClick={getInventory}>
+              Try Again
+            </button>
+          </div>
+        )}
+
+        {/* Empty */}
+        {!loading && !error && inventory.length === 0 && (
+          <div className="inv-feedback">
+            <span className="inv-feedback__icon" style={{ filter: "grayscale(1) opacity(0.4)" }}>🩸</span>
+            <p className="inv-feedback__title">No inventory found</p>
+            <p className="inv-feedback__text">
+              Check back later or contact your administrator.
+            </p>
+          </div>
+        )}
+
+        {/* Grid */}
+        {!loading && !error && inventory.length > 0 && (
+          <div className="inv-grid">
+            {inventory.map((item) => {
+              const status = getStockStatus(item.unitsAvailable);
+              return (
+                <article key={item._id} className={`inv-card inv-card--${status}`}>
+
+                  {/* Glow ring behind badge */}
+                  <div className={`inv-card__ring inv-card__ring--${status}`} />
+
+                  {/* Blood-type badge */}
+                  <div className={`inv-card__badge inv-card__badge--${status}`}>
+                    <span className="inv-card__type">{item.bloodType}</span>
+                  </div>
+
+                  {/* Units */}
+                  <div className="inv-card__units">
+                    <span className="inv-card__num">{item.unitsAvailable}</span>
+                    <span className="inv-card__unit-label">Units Available</span>
+                  </div>
+
+                  {/* Status pill */}
+                  <span className={`inv-card__pill inv-card__pill--${status}`}>
+                    {getStockLabel(item.unitsAvailable)}
+                  </span>
+
+                  {/* Meta rows */}
+                  {(item.expiryDate || item.location || item.lastUpdated) && (
+                    <div className="inv-card__meta">
+                      {item.expiryDate && (
+                        <div className="inv-card__meta-row">
+                          <span className="inv-card__meta-key">Expires</span>
+                          <span className="inv-card__meta-val">
+                            {new Date(item.expiryDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                      )}
+                      {item.location && (
+                        <div className="inv-card__meta-row">
+                          <span className="inv-card__meta-key">Location</span>
+                          <span className="inv-card__meta-val">{item.location}</span>
+                        </div>
+                      )}
+                      {item.lastUpdated && (
+                        <div className="inv-card__meta-row">
+                          <span className="inv-card__meta-key">Updated</span>
+                          <span className="inv-card__meta-val">
+                            {new Date(item.lastUpdated).toLocaleDateString()}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Request button */}
+                  <button
+                    className="inv-card__cta"
+                    onClick={() => navigate("/blood-request")}
+                  >
+                    Request This Type
+                  </button>
+
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </main>
+
       <Footer />
-    </>
+    </div>
   );
 }
 
